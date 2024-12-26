@@ -1,5 +1,4 @@
 import os
-from flask import Flask, request
 from openai import OpenAI
 from telegram import Update
 from telegram.ext import Application, MessageHandler, ContextTypes, filters
@@ -23,8 +22,8 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Send the bot's response
         await message.reply_text(response)
 
+client = OpenAI()
 def gpt(message: str):
-    client = OpenAI()
     response = client.chat.completions.create(
         model="chatgpt-4o-latest",
         messages=[{
@@ -48,6 +47,3 @@ token = os.environ.get('TOKEN')
 application = Application.builder().token(token).build()
 application.add_handler(MessageHandler(filters.ALL, callback))
 application.run_polling(allowed_updates=Update.ALL_TYPES)
-
-app = Flask(__name__)
-app.run(host="0.0.0.0", port=8080)
